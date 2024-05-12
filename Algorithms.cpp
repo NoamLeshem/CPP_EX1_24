@@ -4,7 +4,7 @@
 namespace ariel
 {
 
-const int INF = std::numeric_limits<int>::max();
+const int INFINITY = std::numeric_limits<int>::max();
 
 void Algorithms::bfs(Graph& g, int v, std::vector<bool>& visited)
 {
@@ -34,17 +34,16 @@ int Algorithms::isConnected(Graph& g)
 	{
 		std::vector<bool> visited(g.getSize(), false);
 
-		for (int i = 0; i < g.getSize(); i++)
+		for (size_t i = 0; i < g.getSize(); i++)
 		{
 			std::vector<bool> tempVisited(g.getSize(), false);
 			bfs(g, i, tempVisited);
 
-			for (int j = 0; j < visited.size(); j++)
+			for (size_t j = 0; j < visited.size(); j++)
 			{
-				visited[static_cast<size_t>(j)] = visited[static_cast<size_t>(j)] && tempVisited[static_cast<size_t>(j)];
+				visited[j] = visited[j] && tempVisited[j];
 			}
 		}
-
 
 		for (bool v : visited)
 		{
@@ -65,11 +64,10 @@ int Algorithms::isConnected(Graph& g)
 	}
 }
 
-
 std::string Algorithms::shortestPath(Graph& g, size_t start, size_t end) {
 	size_t n = g.getSize();
 	std::vector<int> prev(n, -1);
-	std::vector<int> dist(n, INF);
+	std::vector<int> dist(n, INFINITY);
 	bellmanFord(g, start, prev, dist);
 	for (size_t u = 0; u < n; u++)
 	{
@@ -95,10 +93,12 @@ std::string Algorithms::shortestPath(Graph& g, size_t start, size_t end) {
 			}
 		}
 	}
-	if (dist[end] != INF) {
+	if (dist[end] != INFINITY)
+	{
 		return printPath(prev, start, end);
-
-	} else {
+	}
+	else
+	{
 		return "-1";
 	}
 }
@@ -122,7 +122,7 @@ void Algorithms::bellmanFord(Graph& g, size_t start, std::vector<int>& previous,
 }
 
 void Algorithms::relax(size_t u, size_t v, int w, std::vector<int>& prev, std::vector<int>& dist) {
-	if (dist[u] != INF && (dist[v] > dist[u] + w)) {
+	if (dist[u] != INFINITY && (dist[v] > dist[u] + w)) {
 		dist[v] = dist[u] + w;
 		prev[v] = u;
 	}
@@ -198,8 +198,6 @@ bool Algorithms::DFSCycle(Graph& g, std::vector<int>& color, std::vector<int>& p
 		return false;
 }
 
-
-
 std::string Algorithms::getCycle(std::vector<int> path, size_t start, size_t end){
 			std::string ans;
 			std::vector<int> oppositePath;
@@ -220,7 +218,6 @@ std::string Algorithms::getCycle(std::vector<int> path, size_t start, size_t end
 		}
 
 std::string Algorithms::isBipartite(Graph& g) {
-	// coverting adjMat to adjList
 	size_t n = g.getSize();
 	std::vector<std::vector<int>> edges(n);
 
@@ -234,11 +231,11 @@ std::string Algorithms::isBipartite(Graph& g) {
 
 	std::vector<int> visited(g.getSize(), -1);
 	bool res = true;
-	std::unordered_set<int> setA, setB; // Sets to store nodes in different colors
+	std::unordered_set<int> first_set, second_set;
 
-	for (size_t i = 0; i < g.getSize(); ++i) {
+	for (size_t i = 0; i < g.getSize(); i++) {
 		if (visited[i] == -1) {
-			if (!bipartite(g, edges, i, visited, setA, setB)) {
+			if (!bipartite(g, edges, i, visited, first_set, second_set)) {
 				res = false;
 				break;
 			}
@@ -249,7 +246,7 @@ std::string Algorithms::isBipartite(Graph& g) {
 	if (res) {
 		result += "The graph is bipartite: A={";
 		bool firstA = true;
-		for (auto elem : setA) {
+		for (auto elem : first_set) {
 			if (!firstA) {
 				result += ", ";
 			}
@@ -258,7 +255,7 @@ std::string Algorithms::isBipartite(Graph& g) {
 		}
 		result += "}, B={";
 		bool firstB = true;
-		for (auto elem : setB) {
+		for (auto elem : second_set) {
 			if (!firstB) {
 				result += ", ";
 			}
@@ -274,47 +271,49 @@ std::string Algorithms::isBipartite(Graph& g) {
 
 
 bool Algorithms::bipartite(Graph& g, std::vector<std::vector<int>>& edges, int start, std::vector<int>& visited, std::unordered_set<int>& setA, std::unordered_set<int>& setB) {
-  std::queue<int> q;
-  q.push(start);
+	std::queue<int> q;
+	q.push(start);
 
-  visited[(size_t)start] = 1;
-  setA.insert(start); // Add starting node to set A
+	visited[(size_t)start] = 1;
+	setA.insert(start); // Add starting node to set A
 
-  while (!q.empty()) {
-	int curr = q.front();
-	q.pop();
-	for (int elem : edges[(size_t)curr]) {
-	  if (visited[(size_t)elem] == visited[(size_t)curr]) {
-		return false;
-	  }
-	  if (visited[(size_t)elem] == -1) {
-		visited[(size_t)elem] = 1 - visited[(size_t)curr];
-		if (visited[(size_t)elem] == 1) {
-		  setA.insert(elem); // Add to set A if assigned color 1
-		} else {
-		  setB.insert(elem); // Add to set B if assigned color 0
+	while (!q.empty()) {
+		int curr = q.front();
+		q.pop();
+		for (int elem : edges[(size_t)curr]) {
+			if (visited[(size_t)elem] == visited[(size_t)curr]) {
+				return false;
+			}
+			if (visited[(size_t)elem] == -1) {
+				visited[(size_t)elem] = 1 - visited[(size_t)curr];
+				if (visited[(size_t)elem] == 1) {
+					setA.insert(elem); // Add to set A if assigned color 1
+				} else {
+					setB.insert(elem); // Add to set B if assigned color 0
+				}
+				q.push(elem);
+			}
 		}
-		q.push(elem);
-	  }
+  	}
+	return true;
 	}
-  }
-  return true;
-}
 
-	int Algorithms::negativeCycle(Graph& g) {
-	if(g.hasNegativeEdges){
-		if(g.hasNegativeCycle){
-				return 1;
-		} else {
-			size_t n = g.getSize();
-			std::vector<int> prev(n, -1);
-			std::vector<int> dist(n, INF);
-			bellmanFord(g, 0, prev, dist);
-			for (size_t u = 0; u < n; ++u) {
-				for (size_t v = 0; v < n; ++v) {
-					if (g.adjacencyMatrix[u][v] != 0 && dist[v] > dist[u] + g.adjacencyMatrix[u][v]) {
+int Algorithms::negativeCycle(Graph& g) {
+	if(g.hasNegativeEdges)
+	{
+		if(g.hasNegativeCycle)
+		{
+			return 1;
+		}
+
+		size_t n = g.getSize();
+		std::vector<int> prev(n, -1);
+		std::vector<int> dist(n, INFINITY);
+		bellmanFord(g, 0, prev, dist);
+		for (size_t u = 0; u < n; ++u) {
+			for (size_t v = 0; v < n; ++v) {
+				if (g.adjacencyMatrix[u][v] != 0 && dist[v] > dist[u] + g.adjacencyMatrix[u][v]) {
 						g.hasNegativeCycle = true;
-						//std::cout << "Found Negative Cycle" << std::endl;
 						std::vector<size_t> negativeCycle;
 						size_t current = u;
 						while(std::find(negativeCycle.begin(), negativeCycle.end(), current) == negativeCycle.end()){
@@ -325,16 +324,18 @@ bool Algorithms::bipartite(Graph& g, std::vector<std::vector<int>>& edges, int s
 						std::string cycleString = std::to_string(current);
 						for(size_t i = 0; i < negativeCycle.size() - 1; ++i){
 							cycleString += "->" + std::to_string(negativeCycle[i]);
-						}
+					}
 						g.setCycle(cycleString);
 						return 1;
-						}
-					}
 				}
+			}
 		}
-			} else {
-				return 0;
+
+	}
+	else
+	{
+		return 0;
 	}
 	return 0;
 	}
-} // namespace ariel
+}

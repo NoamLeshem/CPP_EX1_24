@@ -10,11 +10,11 @@
 
 ## Graph
 
-`Graph.cpp` implements a Graph class designed to handle graph structures.
+`Graph.cpp` מימוש של מחקלת הגרף
 
 ## Algorithms
 
-`Algorithms.cpp` offers a set of graph algorithms and data structures.
+`Algorithms.cpp` מימוש של אלגוריתמים שונים המתבצעים על גרף
 
 ## How to Use
 
@@ -31,13 +31,13 @@
    using namespace ariel;
    ```
 
-3. **Creating a Graph Object:**
+3. **Creating a Graph:**
 
    ```cpp
    Graph g;
    ```
 
-4. **Loading Graph Data:**
+4. **Loading:**
 
    ```cpp
    vector<vector<int>> graph = {
@@ -47,7 +47,7 @@
    g.loadGraph(graph);
    ```
 
-5. **Utilize Algorithms:**
+5. **Algorithms:**
 
    ```cpp
    isConnected(g);
@@ -55,6 +55,3 @@
    isContainsCycle(g);
    isBipartite(g);
    ```
-
-6. **Access Results:**
-   Use the returned values for further processing in your application.

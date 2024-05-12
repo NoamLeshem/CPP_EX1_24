@@ -22,6 +22,9 @@ namespace ariel {
         Graph();
         void loadGraph(const std::vector<std::vector<int>>& matrix);
         void printGraph() const;
+        void cleanGraph();
+        void setDirected(const std::vector<std::vector<int>>& matrix);
+        void setNegativeEdges(const std::vector<std::vector<int>>& matrix);
         inline size_t getSize() const{ return adjacencyMatrix.size(); };
         inline std::string getCycle(){ return cycle; }
         inline void setCycle(std::string foundCycle) { cycle = foundCycle;}
